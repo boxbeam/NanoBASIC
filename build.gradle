@@ -36,5 +36,5 @@ sourceSets {
 }
 
 dependencies {
-    implementation "com.github.Redempt:RedLex:1.1"
+    implementation "com.github.Redempt:RedLex:1.2"
 }
