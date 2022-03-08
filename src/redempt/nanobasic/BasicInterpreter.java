@@ -7,6 +7,9 @@ import redempt.nanobasic.expression.Operator;
 import redempt.nanobasic.expression.RandomValue;
 import redempt.nanobasic.expression.Value;
 import redempt.nanobasic.expression.Variable;
+import redempt.nanobasic.string.ExpressionString;
+import redempt.nanobasic.string.LiteralString;
+import redempt.nanobasic.string.StringPart;
 import redempt.redlex.bnf.BNFParser;
 import redempt.redlex.data.Token;
 import redempt.redlex.processing.CullStrategy;
@@ -89,13 +92,14 @@ public class BasicInterpreter {
 				return s -> s.getVariables()[variable] = expr.getValue(s);
 			case "print":
 				Token child = line.getChildren()[0];
-				if (child.getType().getName().equals("string")) {
-					String value = child.getValue().replace("\\", "");
-					String fvalue = value.substring(1, value.length() - 1);
-					return s -> System.out.println(fvalue);
-				}
-				expr = parseExpression(child);
-				return s -> System.out.println(expr.getValue(s));
+				StringPart[] parts = parseFormatString(child);
+				return s -> {
+					StringBuilder builder = new StringBuilder();
+					for (StringPart part : parts) {
+						builder.append(part.getValue(s));
+					}
+					System.out.println(builder);
+				};
 			case "if":
 				children = line.getChildren();
 				Token[] compare = children[0].getChildren();
@@ -123,6 +127,23 @@ public class BasicInterpreter {
 		}
 	}
 	
+	private static StringPart[] parseFormatString(Token formatString) {
+		Token[] children = formatString.getChildren();
+		StringPart[] parts = new StringPart[children.length];
+		for (int i = 0; i < parts.length; i++) {
+			Token part = children[i];
+			if (part.getType().getName().equals("string")) {
+				String str = part.getValue().replace("\\", "");
+				str = str.substring(1, str.length() - 1);
+				parts[i] = new LiteralString(str);
+				continue;
+			}
+			Value expr = parseExpression(part);
+			parts[i] = new ExpressionString(expr);
+		}
+		return parts;
+	}
+	
 	private static Value parseExpression(Token expr) {
 		List<ExprToken> tokens = new ArrayList<>();
 		for (Token child : expr.getChildren()) {
@@ -131,7 +152,7 @@ public class BasicInterpreter {
 				case "num" -> new LiteralValue(Integer.parseInt(child.getValue()));
 				case "var" -> new Variable(child.getValue().charAt(0) - 'A');
 				case "op" -> getOperator(child.getValue().charAt(0));
-				case "rand" -> new RandomValue(Integer.parseInt(child.getChildren()[0].getValue()));
+				case "rand" -> new RandomValue(parseExpression(child.getChildren()[0]));
 				default -> null;
 			};
 			tokens.add(token);

@@ -8,15 +8,15 @@ public class RandomValue implements Value {
 	
 	private Random random = new Random(System.currentTimeMillis());
 	
-	private int bound;
+	private Value bound;
 	
-	public RandomValue(int bound) {
+	public RandomValue(Value bound) {
 		this.bound = bound;
 	}
 	
 	@Override
 	public int getValue(Script script) {
-		return random.nextInt(bound);
+		return random.nextInt(bound.getValue(script));
 	}
 	
 }

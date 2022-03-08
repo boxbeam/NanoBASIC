@@ -1,5 +1,5 @@
 sep ::= (" " | "\t")+
-comment ::= "REM" [^]*
+comment ::= lineNum? sep? "REM" (!"\n" [^])*
 var ::= [A-Z]
 num ::= "-"? [0-9]+
 assign ::= "LET" sep var sep? "=" sep? expr
@@ -7,10 +7,11 @@ goto ::= "GOTO" sep num
 gosub ::= "GOSUB" sep num
 return ::= "RETURN"
 end ::= "END"
-rand ::= "RND(" num ")"
+rand ::= "RND(" expr ")"
 value ::= rand | num | var
 string ::= "\"" ("\\" [^] | [^"])* "\""
-print ::= "PRINT" sep (expr | string)
+formatString ::= (expr | string) (";" (expr | string))*
+print ::= "PRINT" sep formatString
 op ::= [-+*/]
 term ::= value | "(" expr ")"
 expr ::= term sep? (op sep? term sep?)*
