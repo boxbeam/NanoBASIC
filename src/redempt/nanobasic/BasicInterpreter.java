@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.function.BiPredicate;
 
@@ -104,6 +105,12 @@ public class BasicInterpreter {
 					if (comp.test(a.getValue(s), b.getValue(s))) {
 						toRun.execute(s);
 					}
+				};
+			case "input":
+				int varNum = line.getChildren()[0].getValue().charAt(0) - 'A';
+				Scanner scanner = new Scanner(System.in);
+				return s -> {
+					s.getVariables()[varNum] = scanner.nextInt();
 				};
 			default:
 				return null;

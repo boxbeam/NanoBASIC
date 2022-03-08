@@ -12,8 +12,9 @@ term ::= value | "(" expr ")"
 expr ::= term sep? (op sep? term sep?)*
 comp ::= ">" | "<" | "==" | ">=" | "<="
 condition ::= expr sep? comp sep? expr
-line ::= assign | goto | if | print
 if ::= "IF" sep condition sep? "THEN" sep line
+input ::= "INPUT" sep var
 lineNum ::= [0-9]+
+line ::= assign | goto | if | print | input
 fullLine ::= lineNum sep line
 root ::= ((fullLine | comment) ("\n" | <eof>))*
