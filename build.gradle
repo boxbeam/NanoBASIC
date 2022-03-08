@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+repositories {
+    mavenCentral()
+    maven {
+        url = "https://redempt.dev"
+    }
+}
+
+application {
+    mainClass = 'redempt.nanobasic.Main'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'redempt.nanobasic.Main'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'res'
+        }
+    }
+}
+
+dependencies {
+    implementation "com.github.Redempt:RedLex:1.1"
+}

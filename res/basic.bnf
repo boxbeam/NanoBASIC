@@ -1,0 +1,19 @@
+sep ::= (" " | "\t")+
+comment ::= "REM" [^]*
+var ::= [A-Z]
+num ::= "-"? [0-9]+
+assign ::= "LET" sep var sep "=" sep expr
+goto ::= "GOTO" sep num
+value ::= num | var
+string ::= "\"" ("\\" [^] | [^"])* "\""
+print ::= "PRINT" sep (expr | string)
+op ::= [-+*/]
+term ::= value | "(" expr ")"
+expr ::= term sep? (op sep? term sep?)*
+comp ::= ">" | "<" | "==" | ">=" | "<="
+condition ::= expr sep? comp sep? expr
+line ::= assign | goto | if | print
+if ::= "IF" sep condition sep? "THEN" sep line
+lineNum ::= [0-9]+
+fullLine ::= lineNum sep line
+root ::= ((fullLine | comment) ("\n" | <eof>))*
