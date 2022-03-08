@@ -15,11 +15,19 @@ To run a script, first clone this repository and build the jar using `./gradlew 
 ## Instructions
 
 `LET <var> = <expr>` - Assign a variable to a numeric value
+
 `PRINT <expr>` - Print a numeric value
+
 `PRINT "string"` - Print a string
+
 `IF <condition> THEN <instruction>` - Conditionally run an instruction
+
 `GOTO <line>` - Jumps to a line number
+
 `GOSUB <line>` - Jumps to a line number and pushes the previous line number onto the stack
+
 `RETURN` - Returns to the last line pushed onto the stack
+
 `INPUT <var>` - Reads a number from stdin and puts it into a variable
+
 `END` - Ends the program
