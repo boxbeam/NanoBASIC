@@ -9,6 +9,7 @@ public class Variable implements Value {
 	
 	public Variable(int index, boolean negative) {
 		this.index = index;
+		this.negative = negative;
 	}
 	
 	@Override
