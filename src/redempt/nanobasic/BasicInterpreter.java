@@ -91,6 +91,9 @@ public class BasicInterpreter {
 				Value expr = parseExpression(children[1]);
 				return s -> s.getVariables()[variable] = expr.getValue(s);
 			case "print":
+				if (line.getChildren().length == 0) {
+					return s -> System.out.println();
+				}
 				Token child = line.getChildren()[0];
 				StringPart[] parts = parseFormatString(child);
 				return s -> {
@@ -150,7 +153,7 @@ public class BasicInterpreter {
 			ExprToken token = switch (child.getType().getName()) {
 				case "expr" -> parseExpression(child);
 				case "num" -> new LiteralValue(Integer.parseInt(child.getValue()));
-				case "var" -> new Variable(child.getValue().charAt(0) - 'A');
+				case "var" -> parseVariable(child);
 				case "op" -> getOperator(child.getValue().charAt(0));
 				case "rand" -> new RandomValue(parseExpression(child.getChildren()[0]));
 				default -> null;
@@ -174,6 +177,12 @@ public class BasicInterpreter {
 		return (Value) tokens.get(0);
 	}
 	
+	private static Variable parseVariable(Token var) {
+		String name = var.getValue();
+		char c = name.charAt(name.length() - 1);
+		return new Variable(c - 'A', name.startsWith("-"));
+	}
+	
 	private static BiPredicate<Integer, Integer> getComparator(String comp) {
 		return switch (comp) {
 			case ">" -> (a, b) -> a > b;
@@ -181,7 +190,7 @@ public class BasicInterpreter {
 			case ">=" -> (a, b) -> a >= b;
 			case "<=" -> (a, b) -> a <= b;
 			case "<>" -> (a, b) -> !Objects.equals(a, b);
-			case "==" -> Objects::equals;
+			case "=" -> Objects::equals;
 			default -> null;
 		};
 	}
