@@ -4,6 +4,7 @@ import redempt.nanobasic.expression.ExprToken;
 import redempt.nanobasic.expression.LiteralValue;
 import redempt.nanobasic.expression.Operation;
 import redempt.nanobasic.expression.Operator;
+import redempt.nanobasic.expression.RandomValue;
 import redempt.nanobasic.expression.Value;
 import redempt.nanobasic.expression.Variable;
 import redempt.redlex.bnf.BNFParser;
@@ -76,8 +77,9 @@ public class BasicInterpreter {
 	private static Instruction parseInstruction(Token line, List<GotoInstruction> gotos) {
 		switch (line.getType().getName()) {
 			case "goto":
+			case "gosub":
 				int lineNum = Integer.parseInt(line.getChildren()[0].getValue());
-				GotoInstruction instruction = new GotoInstruction(lineNum);
+				GotoInstruction instruction = new GotoInstruction(lineNum, line.getType().getName().equals("gosub"));
 				gotos.add(instruction);
 				return instruction;
 			case "assign":
@@ -112,6 +114,10 @@ public class BasicInterpreter {
 				return s -> {
 					s.getVariables()[varNum] = scanner.nextInt();
 				};
+			case "end":
+				return s -> System.exit(0);
+			case "return":
+				return Script::ret;
 			default:
 				return null;
 		}
@@ -125,6 +131,7 @@ public class BasicInterpreter {
 				case "num" -> new LiteralValue(Integer.parseInt(child.getValue()));
 				case "var" -> new Variable(child.getValue().charAt(0) - 'A');
 				case "op" -> getOperator(child.getValue().charAt(0));
+				case "rand" -> new RandomValue(Integer.parseInt(child.getChildren()[0].getValue()));
 				default -> null;
 			};
 			tokens.add(token);
@@ -152,6 +159,7 @@ public class BasicInterpreter {
 			case "<" -> (a, b) -> a < b;
 			case ">=" -> (a, b) -> a >= b;
 			case "<=" -> (a, b) -> a <= b;
+			case "<>" -> (a, b) -> !Objects.equals(a, b);
 			case "==" -> Objects::equals;
 			default -> null;
 		};

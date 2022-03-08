@@ -3,9 +3,11 @@ package redempt.nanobasic;
 public class GotoInstruction implements Instruction {
 	
 	private int line;
+	private boolean sub;
 	
-	public GotoInstruction(int line) {
+	public GotoInstruction(int line, boolean sub) {
 		this.line = line;
+		this.sub = sub;
 	}
 	
 	public int getLine() {
@@ -18,7 +20,11 @@ public class GotoInstruction implements Instruction {
 	
 	@Override
 	public void execute(Script script) {
-		script.setLine(line);
+		if (sub) {
+			script.goSub(line);
+		} else {
+			script.goTo(line);
+		}
 	}
 	
 }

@@ -1,7 +1,5 @@
 # NanoBASIC
-An extremely minimal interpreter for BASIC with only five legal instructions
-
-The five instructions are `PRINT`, `INPUT` `GOTO`, `IF`, and `LET`. Each line must be preceded with its line number. Variables may only be single uppercase letters. Below is an example script which prints all the numbers up to 1 million:
+An extremely minimal interpreter for BASIC with only a handful of legal instructions. Below is an example script which prints all numbers up to 1 million.
 
 ```basic
 10 LET A = 0
@@ -12,6 +10,16 @@ The five instructions are `PRINT`, `INPUT` `GOTO`, `IF`, and `LET`. Each line mu
 60 PRINT "DONE"
 ```
 
-Not shown here is the `INPUT` instruction, which is used like `INPUT A` to read a number from stdin to the `A` variable.
-
 To run a script, first clone this repository and build the jar using `./gradlew shadowJar`, then you may find the jar in the `build/libs` folder. You can run your script using `java -jar NanoBASIC-all.jar path/to/script.bas`.
+
+## Instructions
+
+`LET <var> = <expr>` - Assign a variable to a numeric value
+`PRINT <expr>` - Print a numeric value
+`PRINT "string"` - Print a string
+`IF <condition> THEN <instruction>` - Conditionally run an instruction
+`GOTO <line>` - Jumps to a line number
+`GOSUB <line>` - Jumps to a line number and pushes the previous line number onto the stack
+`RETURN` - Returns to the last line pushed onto the stack
+`INPUT <var>` - Reads a number from stdin and puts it into a variable
+`END` - Ends the program

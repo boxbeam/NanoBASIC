@@ -2,19 +2,23 @@ sep ::= (" " | "\t")+
 comment ::= "REM" [^]*
 var ::= [A-Z]
 num ::= "-"? [0-9]+
-assign ::= "LET" sep var sep "=" sep expr
+assign ::= "LET" sep var sep? "=" sep? expr
 goto ::= "GOTO" sep num
-value ::= num | var
+gosub ::= "GOSUB" sep num
+return ::= "RETURN"
+end ::= "END"
+rand ::= "RND(" num ")"
+value ::= rand | num | var
 string ::= "\"" ("\\" [^] | [^"])* "\""
 print ::= "PRINT" sep (expr | string)
 op ::= [-+*/]
 term ::= value | "(" expr ")"
 expr ::= term sep? (op sep? term sep?)*
-comp ::= ">" | "<" | "==" | ">=" | "<="
+comp ::= ">" | "<" | "==" | ">=" | "<=" | "<>"
 condition ::= expr sep? comp sep? expr
 if ::= "IF" sep condition sep? "THEN" sep line
 input ::= "INPUT" sep var
 lineNum ::= [0-9]+
-line ::= assign | goto | if | print | input
+line ::= assign | goto | if | print | input | end | gosub | return
 fullLine ::= lineNum sep line
-root ::= ((fullLine | comment) ("\n" | <eof>))*
+root ::= ((fullLine | comment) ("\n"+ | <eof>))*
