@@ -52,7 +52,11 @@ public class BasicInterpreter {
 			i++;
 		}
 		for (GotoInstruction instruction : gotos) {
-			instruction.setLine(lines.get(instruction.getLine()));
+			Integer line = lines.get(instruction.getLine());
+			if (line == null) {
+				throw new IllegalArgumentException("Illegal goto for line " + instruction.getLine() + ", no line exists with that number");
+			}
+			instruction.setLine(line);
 		}
 		return new Script(instructionList);
 	}
