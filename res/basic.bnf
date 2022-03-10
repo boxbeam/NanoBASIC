@@ -1,25 +1,34 @@
+# ignored symbols
 sep ::= (" " | "\t")+
 comment ::= lineNum? sep? i"REM" (!"\n" [^])*
+
+# values
 var ::= "-"? [A-Z]
 num ::= "-"? [0-9]+
-assign ::= i"LET" sep var sep? "=" sep? expr
-goto ::= i"GOTO" sep num
-gosub ::= i"GOSUB" sep num
-return ::= i"RETURN"
-end ::= i"END"
+lineNum ::= [0-9]+
 rand ::= i"RND(" expr ")"
 value ::= rand | num | var
 string ::= "\"" ("\\" [^] | [^"])* "\""
 formatString ::= (expr | string) (";" (expr | string))* ";"?
-print ::= i"PRINT" (sep formatString)?
+
+# expressions
 op ::= [-+*/]
 term ::= value | "(" expr ")"
 expr ::= term sep? (op sep? term sep?)*
 comp ::= ">" | "<" | "=" | ">=" | "<=" | "<>"
 condition ::= expr sep? comp sep? expr
+
+# instructions
+assign ::= i"LET" sep var sep? "=" sep? expr
+goto ::= i"GOTO" sep num
+gosub ::= i"GOSUB" sep num
+return ::= i"RETURN"
+end ::= i"END"
+print ::= i"PRINT" (sep formatString)?
 if ::= i"IF" sep condition sep? i"THEN" sep line
 input ::= i"INPUT" sep var
-lineNum ::= [0-9]+
+
+# lines
 line ::= assign | goto | if | print | input | end | gosub | return
 fullLine ::= lineNum sep line
 root ::= ((fullLine | comment) ("\n"+ | <eof>))*
